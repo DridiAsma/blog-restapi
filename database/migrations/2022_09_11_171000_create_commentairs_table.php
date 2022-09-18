@@ -15,6 +15,9 @@ class CreateCommentairsTable extends Migration
     {
         Schema::create('commentairs', function (Blueprint $table) {
             $table->id();
+            $table->integer('user_id');
+            $table->integer('post_id');
+            $table->string('comment');
             $table->timestamps();
         });
     }

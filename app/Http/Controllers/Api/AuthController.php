@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+
 
 class AuthController extends Controller
 {
@@ -33,6 +36,46 @@ class AuthController extends Controller
             ], 200);
 
 
+    }
 
+     //login function
+     public function login (Request $request)
+     {
+
+
+        //Validation fields
+        $valider = $request->validate([
+                'email' => 'required|email',
+                'password' => 'required|min:6'
+            ]);
+
+            // attempt login
+            if(!Auth::attempt($valider))
+            {
+                return response([ 'message' => 'Invalid credentials.'], 403);
+            }
+            return response([
+                'user' => $user = Auth::user(),
+                'token' => $user->createToken('secret')->plainTextToken
+            ], 200);
+
+    }
+
+
+    //logout user
+    public function logout(User $user)
+    {
+        $user->tokens()->delete();
+        return response([
+            'message' => 'logout success.'
+        ], 200);
+    }
+
+
+    // getUser Profile
+    public function user(){
+        return response([
+         'user' => auth()->user()
+        ], 200);
     }
 }
