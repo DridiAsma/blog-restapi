@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -13,7 +14,11 @@ class PostController extends Controller
     {
         return response([
             'posts' => Post::orderBy('created_at', 'desc')->
-            with('user:id,name,image')->withCount('comments', 'likes')->get()
+            with('user:id,name,image')->withCount('comments', 'likes')
+            ->with('likes', function($like){
+                return $like->where('user_id', auth()->user()->id)
+                ->select('id', 'user_id', 'post_id')->get();
+            })->get()
         ], 200);
     }
 
@@ -33,10 +38,12 @@ class PostController extends Controller
     $valide = $request->validate([
         'body' => 'required|string'
     ]);
+    $image = $this->saveImage($request->image, 'posts');
 
     $post = Post::create([
         'body' => $valide['body'],
-        'user_id' => auth()->user()->id
+        'user_id' => auth()->user()->id,
+        'image' => $image
     ]);
 
     return response(['message' => 'Post created', 'post' => $post]);
@@ -86,7 +93,8 @@ class PostController extends Controller
     $post->delete();
 
     return response([
-        'message' => 'post deleted'
+        'message' => 'Post deleted.'
     ], 200);
  }
+
 }

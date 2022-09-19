@@ -41,8 +41,6 @@ class AuthController extends Controller
      //login function
      public function login (Request $request)
      {
-
-
         //Validation fields
         $valider = $request->validate([
                 'email' => 'required|email',
@@ -78,4 +76,23 @@ class AuthController extends Controller
          'user' => auth()->user()
         ], 200);
     }
+
+    public function update(Request $request)
+    {
+        $valide = $request->validate([
+            'name' => 'required|string'
+        ]);
+        $image = $this->saveImage($request->image, 'profiles');
+
+        $user = Auth::user()->update([
+            'name' => $valide['name'],
+            'image' => $image
+        ]);
+
+        return response([
+            'message' => 'User update',
+            'user' => $user
+        ], 200);
+    }
 }
+

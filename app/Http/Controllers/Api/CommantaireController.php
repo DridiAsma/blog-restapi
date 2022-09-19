@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Commantaire;
+use App\Models\Comment;
 use App\Models\Post;
 
 class CommantaireController extends Controller
@@ -39,7 +39,7 @@ class CommantaireController extends Controller
             'comment' => 'required|string'
         ]);
 
-        Commantaire::create([
+       Comment::create([
             'comment' => $valide['comment'],
             'post_id' => $id,
             'user_id' => auth()->user()->id
@@ -53,7 +53,7 @@ class CommantaireController extends Controller
     //update
     public function update(Request $request, $id)
     {
-        $comment = Commantaire::find($id);
+        $comment =Comment::find($id);
 
         if(!$comment)
         {
@@ -86,7 +86,7 @@ class CommantaireController extends Controller
     // delete a comment
     public function destroy($id)
     {
-        $comment = Commantaire::find($id);
+        $comment =Comment::find($id);
 
         if(!$comment)
         {
