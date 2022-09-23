@@ -26,7 +26,6 @@ class Controller extends BaseController
 
         //return the path
         // url is the base url exp: localhost
-
-        return URL::to('/').'/storage/'.$path.'/'.$filename;
+        return URL::to('/').'/public/'.$path.'/'.$filename;
     }
 }
